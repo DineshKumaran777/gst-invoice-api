@@ -198,7 +198,7 @@ public class InvoiceService(
 
         if (activePlan is not null && activePlan.MaxInvoicesPerMonth > 0 && activePlan.MaxInvoicesPerMonth < int.MaxValue)
         {
-            var monthStart = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+            var monthStart = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
             var monthEnd = monthStart.AddMonths(1);
 
             var invoiceCountThisMonth = await dbContext.Invoices

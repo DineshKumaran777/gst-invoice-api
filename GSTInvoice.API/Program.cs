@@ -54,6 +54,11 @@ using Serilog;
 // QuestPDF Community License (free, no watermark)
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
+// Allow Npgsql to treat DateTime with Kind=Unspecified as UTC when writing to
+// PostgreSQL 'timestamp with time zone' columns, preventing the common error:
+// "Cannot write DateTime with Kind=Unspecified to PostgreSQL type 'timestamp with time zone'"
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
