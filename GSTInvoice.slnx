@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GSTInvoice.API/GSTInvoice.API.csproj" />
+  <Project Path="GSTInvoice.Shared/GSTInvoice.Shared.csproj" />
+</Solution>

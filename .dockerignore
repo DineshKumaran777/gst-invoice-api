@@ -1,0 +1,49 @@
+# =============================================================================
+# .dockerignore — GST Invoice API
+# Excludes unnecessary files from Docker build context
+# =============================================================================
+
+# .NET
+**/bin/
+**/obj/
+**/*.user
+**/*.suo
+**/.vs/
+
+# Logs
+**/logs/
+
+# Test results
+**/TestResults/
+
+# Node / ClientApp
+ClientApp/node_modules/
+ClientApp/dist/
+ClientApp/.vite/
+
+# IDE and OS files
+.git/
+.gitattributes
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+**/.env
+**/.env.*.local
+**/*.Development.json
+**/appsettings.Development.json
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentation (not needed at runtime)
+docs/
+README.md
+TODO.md
