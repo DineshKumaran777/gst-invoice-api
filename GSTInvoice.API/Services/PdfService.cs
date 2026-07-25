@@ -162,17 +162,21 @@ public class PdfService : IPdfService
                 {
                     var rowIndex = index++;
 
-                    static IContainer DataCell(IContainer cell, string text, bool isNumber = false, bool alignCenter = false)
+                    static void DataCell(IContainer cell, string text, bool isNumber = false, bool alignCenter = false)
                     {
-                        cell.Border(0.5f).BorderColor(Colors.Grey.Lighten2)
-                            .PaddingVertical(4).PaddingHorizontal(4)
+                        var container = cell
+                            .Border(0.5f)
+                            .BorderColor(Colors.Grey.Lighten2)
+                            .PaddingVertical(4)
+                            .PaddingHorizontal(4)
                             .DefaultTextStyle(x => x.FontSize(9));
+
                         if (alignCenter)
-                            cell.AlignCenter();
+                            container.AlignCenter().Text(text);
                         else if (isNumber)
-                            cell.AlignRight();
-                        cell.Text(text);
-                        return cell;
+                            container.AlignRight().Text(text);
+                        else
+                            container.Text(text);
                     }
 
                     table.Cell().Element(c => DataCell(c, rowIndex.ToString(), alignCenter: true));
