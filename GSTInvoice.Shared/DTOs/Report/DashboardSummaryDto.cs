@@ -17,6 +17,8 @@
 // via any medium, is strictly prohibited without the prior written permission
 // of DK (Freelancer).
 // =============================================================================
+using GSTInvoice.Shared.Enums;
+
 namespace GSTInvoice.Shared.DTOs.Report;
 
 public class DashboardSummaryDto
@@ -34,6 +36,25 @@ public class DashboardSummaryDto
     public IReadOnlyList<InvoiceStatusCountDto> InvoiceStatusDistribution { get; set; } = [];
 
     public IReadOnlyList<TopClientRevenueDto> TopClientsByRevenue { get; set; } = [];
+
+    public IReadOnlyList<RecentInvoiceDto> LastFiveInvoices { get; set; } = [];
+}
+
+public class RecentInvoiceDto
+{
+    public Guid Id { get; set; }
+
+    public string InvoiceNumber { get; set; } = string.Empty;
+
+    public string ClientName { get; set; } = string.Empty;
+
+    public DateTime InvoiceDate { get; set; }
+
+    public DateTime DueDate { get; set; }
+
+    public InvoiceStatus Status { get; set; }
+
+    public decimal GrandTotal { get; set; }
 }
 
 public class RevenueByMonthDto

@@ -58,6 +58,22 @@ public class ReportService(AppDbContext dbContext, ITenantContextAccessor tenant
             .ThenBy(item => item.Month)
             .ToListAsync(cancellationToken);
 
+        var lastFiveInvoices = await invoices
+            .Include(invoice => invoice.Client)
+            .OrderByDescending(invoice => invoice.CreatedAtUtc)
+            .Take(5)
+            .Select(invoice => new RecentInvoiceDto
+            {
+                Id = invoice.Id,
+                InvoiceNumber = invoice.InvoiceNumber,
+                ClientName = invoice.Client != null ? invoice.Client.Name : "",
+                InvoiceDate = invoice.InvoiceDate,
+                DueDate = invoice.DueDate,
+                Status = invoice.Status,
+                GrandTotal = invoice.GrandTotal,
+            })
+            .ToListAsync(cancellationToken);
+
         var summary = new DashboardSummaryDto
         {
             TotalInvoicesThisMonth = await invoicesThisMonth.CountAsync(cancellationToken),
@@ -106,6 +122,7 @@ public class ReportService(AppDbContext dbContext, ITenantContextAccessor tenant
                     ClientName = item.ClientName,
                     Revenue = Convert.ToDecimal(item.Revenue ?? 0),
                 }).ToList(),
+            LastFiveInvoices = lastFiveInvoices,
         };
 
         await cacheService.SetAsync(cacheKey, summary, TimeSpan.FromMinutes(5), cancellationToken);
