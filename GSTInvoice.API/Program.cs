@@ -166,7 +166,10 @@ builder.Services
     .AddDefaultTokenProviders();
 
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
-var jwtKeyProvider = new JwtSigningKeyProvider(Options.Create(jwtOptions), builder.Environment);
+#pragma warning disable ASP0000 // Services are resolved early for JWT key setup; logger is a framework singleton and safe to resolve here
+var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+#pragma warning restore ASP0000
+var jwtKeyProvider = new JwtSigningKeyProvider(Options.Create(jwtOptions), builder.Environment, loggerFactory.CreateLogger<JwtSigningKeyProvider>());
 builder.Services.AddSingleton<IJwtSigningKeyProvider>(jwtKeyProvider);
 
 builder.Services
