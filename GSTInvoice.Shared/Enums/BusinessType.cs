@@ -17,8 +17,11 @@
 // via any medium, is strictly prohibited without the prior written permission
 // of DK (Freelancer).
 // =============================================================================
+using System.Text.Json.Serialization;
+
 namespace GSTInvoice.Shared.Enums;
 
+[JsonConverter(typeof(BusinessTypeConverter))]
 public enum BusinessType
 {
     Individual = 1,
