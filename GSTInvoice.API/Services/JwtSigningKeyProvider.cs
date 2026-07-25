@@ -30,41 +30,25 @@ public sealed class JwtSigningKeyProvider : IJwtSigningKeyProvider
 
         if (hasPrivateKey && hasPublicKey)
         {
-            var fallbackRsa = RSA.Create(2048);
-
-            signingKey = new Lazy<SecurityKey>(() =>
+            // Try to load both PEMs upfront to catch failures early
+            try
             {
-                try
-                {
-                    var rsa = RSA.Create();
-                    rsa.ImportFromPem(privatePem);
-                    return new RsaSecurityKey(rsa);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogWarning(ex, "Failed to load JWT private key from PEM. Falling back to auto-generated key. Tokens will be invalidated on restart.");
-                    return new RsaSecurityKey(fallbackRsa.ExportParameters(true));
-                }
-            });
+                var signingRsa = RSA.Create();
+                signingRsa.ImportFromPem(privatePem);
 
-            validationKey = new Lazy<SecurityKey>(() =>
+                var validationRsa = RSA.Create();
+                validationRsa.ImportFromPem(publicPem);
+
+                signingKey = new Lazy<SecurityKey>(() => new RsaSecurityKey(signingRsa.ExportParameters(true)));
+                validationKey = new Lazy<SecurityKey>(() => new RsaSecurityKey(validationRsa.ExportParameters(false)));
+                return;
+            }
+            catch (Exception ex)
             {
-                try
-                {
-                    var rsa = RSA.Create();
-                    rsa.ImportFromPem(publicPem);
-                    return new RsaSecurityKey(rsa);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogWarning(ex, "Failed to load JWT public key from PEM. Falling back to auto-generated key. Tokens will be invalidated on restart.");
-                    return new RsaSecurityKey(fallbackRsa.ExportParameters(false));
-                }
-            });
-            return;
+                logger.LogWarning(ex, "Failed to load JWT keys from PEM. Falling back to auto-generated keys. Tokens will be invalidated on restart.");
+            }
         }
-
-        if (hasPrivateKey != hasPublicKey)
+        else if (hasPrivateKey != hasPublicKey)
         {
             logger.LogWarning("Only one of JWT_PRIVATE_KEY_PEM / JWT_PUBLIC_KEY_PEM is set. Both are required for persistent keys. Falling back to auto-generated keys.");
         }
