@@ -11,7 +11,6 @@ WORKDIR /src
 COPY ["GSTInvoice.slnx", "."]
 COPY ["GSTInvoice.API/GSTInvoice.API.csproj", "GSTInvoice.API/"]
 COPY ["GSTInvoice.Shared/GSTInvoice.Shared.csproj", "GSTInvoice.Shared/"]
-COPY ["GSTInvoice.API.Tests/GSTInvoice.API.Tests.csproj", "GSTInvoice.API.Tests/"]
 
 # Restore NuGet packages
 RUN dotnet restore "GSTInvoice.API/GSTInvoice.API.csproj"
